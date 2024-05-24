@@ -203,7 +203,7 @@ async function createCard(as2) {
     
     async function main() {
         // songs = await getSongs("http://127.0.0.1:3000/songs/")
-        let ab = await fetch("https://github.com/Om005/Music-Player/tree/main/PlayLists/");
+        let ab = await fetch("/PlayLists/");
         let abr = await ab.text();
         let div = document.createElement("div");
         div.innerHTML = abr;
