@@ -2,6 +2,7 @@ let currSong = new Audio();
 let songs
 let curr_playlist
 let curr_songs;
+let old_songs;
 
 async function playSong(Track, pause = false, fname) {
     currSong.src = `/PlayLists/${fname}/${Track}`;
@@ -123,7 +124,15 @@ async function createCard(as2) {
             let new_songs = await getSongs(`${ele}`)
             // console.log(new_songs)
             new_div.querySelector(".play").addEventListener("click", ()=>{
-                playSong(decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-1]), false, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-2]))
+                if(new_songs.length>0){
+                    playSong(decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-1]), false, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-2]));
+                    (async function(){
+                        curr_playlist = new_div.getAttribute("data-loc")
+                        old_songs = await getSongs(curr_playlist)
+                        console.log(curr_playlist)
+                        console.log(old_songs)
+                    })();
+                }
             })
             new_div.addEventListener("click", async () => {
                 curr_playlist = new_div.getAttribute("data-loc")
@@ -142,25 +151,32 @@ async function createCard(as2) {
                     e_div.style.fontSize = "20px"
                     e_div.style.paddingTop = "40%"
                 }
-                for (const song of new_songs) {
-                    // console.log(song)
-                    // console.log(decodeURI(song.split("/")[song.split("/").length-1]))
-                    songUL.innerHTML = songUL.innerHTML + `<li>
+                else{
+
+                    for (const song of new_songs) {
+                        // console.log(song)
+                        // console.log(decodeURI(song.split("/")[song.split("/").length-1]))
+                        songUL.innerHTML = songUL.innerHTML + `<li>
                 <img src="./imgs/musical-note.png" alt="" class="list_img invert">
                 <div class="info">
                 <div class="poppins-semibold name_of_song">${decodeURI(song.split("/")[song.split("/").length-1])}</div>
                 <div class="poppins-semibold creator">Om</div>
                 </div>
                 </li>`
-                }
-                Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(ele => {
+            }
+            Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(ele => {
                     ele.addEventListener("click", () => {
                         playSong(ele.querySelector(".info").firstElementChild.innerHTML, false, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-2]))
                         // playSong(decodeURI(ele.split("/")[ele.split("/").length-1]), true, decodeURI(ele.split("/")[ele.split("/").length-2]))
-                        document.querySelector(".circle").style.transition = `all ${parseInt(currSong.duration)}s`
+                        document.querySelector(".circle").style.transition = `all ${parseInt(currSong.duration)}s`;
+                        (async function(){
+                            old_songs = await getSongs(curr_playlist)
+                            // console.log(old_songs);
+                        })();
                     })
-
+                    
                 })
+            }
                 curr_songs = await getSongs(curr_playlist)
                 // console.log(curr_songs)
                 let hamburger = document.querySelector(".hamburger")
@@ -169,8 +185,16 @@ async function createCard(as2) {
                 }
             })
             if(ele==as2[1]){
+                (async function(){
+                    curr_playlist = new_div.getAttribute("data-loc")
+                    old_songs = await getSongs(curr_playlist)
+                    console.log(curr_playlist)
+                    console.log(old_songs)
+                })();
                 new_div.click()
-                playSong(decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-1]), true, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-2]))
+                if(new_songs.length>0){
+                    playSong(decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-1]), true, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length-2]))
+                }
             }
         
         }
@@ -178,7 +202,7 @@ async function createCard(as2) {
 }
     
     async function main() {
-        songs = await getSongs("http://127.0.0.1:3000/songs/")
+        // songs = await getSongs("http://127.0.0.1:3000/songs/")
         let ab = await fetch("http://127.0.0.1:3000/PlayLists/");
         let abr = await ab.text();
         let div = document.createElement("div");
@@ -187,6 +211,7 @@ async function createCard(as2) {
         // let as2 = div.getElementsByTagName("a");
         (async function () {
             let as2 = div.getElementsByTagName("a")
+            console.log(as2)
             await createCard(as2);
         })();
         // console.log(songs)
@@ -331,32 +356,31 @@ async function createCard(as2) {
                 //     })
                 // })
                 previous.addEventListener("click", () => {
-                        let index = curr_songs.indexOf(currSong.src)
+                        let index = old_songs.indexOf(currSong.src)
                         if (index == 0) {
                             document.querySelector(".circle").style.left = 0
                             currSong.currentTime = 0
                         }
                         else {
-                            playSong(decodeURI(curr_songs[index - 1].split("/")[curr_songs[index-1].split("/").length-1]), false, decodeURI(curr_songs[index].split("/")[curr_songs[index].split("/").length-2]))
+                            playSong(decodeURI(old_songs[index - 1].split("/")[old_songs[index-1].split("/").length-1]), false, decodeURI(old_songs[index].split("/")[old_songs[index].split("/").length-2]))
                             // playSong(decodeURI(songs[index - 1].split(`/songs/`)[1]))
                         }   
                 })
                 next.addEventListener("click", () => {
-                        let index = curr_songs.indexOf(currSong.src)
-                        if (index==curr_songs.length-1) {
+                        let index = old_songs.indexOf(currSong.src)
+                        if (index==old_songs.length-1) {
                             // currSong.currentTime = currSong.duration
                             // play.src = "./svg/play-bt.svg"
                             // document.querySelector(".circle").style.left = 0
                             // currSong.currentTime = 0
                         }
                         else {
-                            // playSong(decodeURI(curr_songs[index - 1].split("/")[curr_songs[index-1].split("/").length-1]), false, decodeURI(curr_songs[index - 2].split("/")[curr_songs[index-1].split("/").length-2]))
-                            playSong(decodeURI(curr_songs[index + 1].split("/")[curr_songs[index+1].split("/").length-1]), false, decodeURI(curr_songs[index].split("/")[curr_songs[index].split("/").length-2]))
+                            // playSong(decodeURI(old_songs[index - 1].split("/")[old_songs[index-1].split("/").length-1]), false, decodeURI(old_songs[index - 2].split("/")[old_songs[index-1].split("/").length-2]))
+                            playSong(decodeURI(old_songs[index + 1].split("/")[old_songs[index+1].split("/").length-1]), false, decodeURI(old_songs[index].split("/")[old_songs[index].split("/").length-2]))
                             // playSong(decodeURI(songs[index - 1].split(`/songs/`)[1]))
                         }
                 })
                 document.addEventListener("keydown", (e)=>{
-                    console.log(e)
                     if(e.key==' '){
                         play.click()
                     }
