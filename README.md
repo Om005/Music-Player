@@ -8,7 +8,7 @@ This is a local music media player built using HTML, CSS, and JavaScript. It all
 - **Next/Previous**: Skip to the next or previous song in the playlist.
 - **Seekbar**: Navigate to any part of the current song.
 - **Different Playlists**: Each playlist is detected from the `PlayLists` folder.
-- **Dynamic Playlist Creation**: To create a new playlist, simply add a new folder in the `PlayLists` folder with an `info.json` file for title and description, and optionally an image for the playlist cover.
+- **Playlist Creation**: To create a new playlist, simply add a new folder in the `PlayLists` folder with an `info.json` file for title and description, and optionally an image for the playlist cover.
 - **Playlist Cover Image**: Each playlist will have a default image, but you can change it by adding any photo in the folder of that playlist.
 - **Playlist Display**: Clicking on a playlist displays the songs in that playlist. Clicking on a song starts its playback.
 - **Empty Playlist Handling**: If a playlist is empty, "No songs found" will be displayed.
@@ -22,13 +22,6 @@ This is a local music media player built using HTML, CSS, and JavaScript. It all
 - cover.jpg (optional)
 - song1.mp3
 - song2.mp3
-...
-/Playlist2
-- info.json
-- cover.jpg (optional)
-- song1.mp3
-- song2.mp3
-
 
 ### `info.json` Format
 
