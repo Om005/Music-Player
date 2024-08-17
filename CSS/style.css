@@ -17,6 +17,9 @@
     color: white;
 } */
 
+.buttons{
+    height: 45px;
+}
 .container{
     height: 100vh;
     overflow: scroll;

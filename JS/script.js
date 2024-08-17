@@ -180,6 +180,7 @@ async function createCard(as2) {
                         ele.addEventListener("click", () => {
                             playSong(ele.querySelector(".info").firstElementChild.innerHTML, false, decodeURI(new_songs[0].split("/")[new_songs[0].split("/").length - 2]))
                             // playSong(decodeURI(ele.split("/")[ele.split("/").length-1]), true, decodeURI(ele.split("/")[ele.split("/").length-2]))
+                            document.querySelector("#play-logo").src = "./imgs/dynamic.gif"
                             document.querySelector(".circle").style.transition = `all ${parseInt(currSong.duration)}s`;
                             (async function () {
                                 old_songs = await getSongs(curr_playlist)
@@ -284,10 +285,12 @@ async function main() {
         if (currSong.paused) {
             currSong.play()
             play.src = "./svg/pause.svg"
+            document.querySelector("#play-logo").src = "./imgs/dynamic.gif" 
         }
         else {
             currSong.pause()
             play.src = "./svg/play-bt.svg"
+            document.querySelector("#play-logo").src = "./imgs/static.png" 
         }
     })
     play.addEventListener("mousedown", () => {
